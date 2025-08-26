@@ -1,0 +1,13 @@
+<%- include("./include/header.ejs") -%> 
+
+  <!-- Body -->
+  <main>
+    <div class="container">
+      <% if (userID) { %>
+        <%= userID %>!!
+      <% } %>
+      Welcome to our website!
+    </div>
+  </main>
+
+<%- include("./include/footer.ejs") -%>

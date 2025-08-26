@@ -1,0 +1,19 @@
+<%- include("../../include/header.ejs") -%> 
+
+<!-- Body -->
+<main>
+  <div class="container">
+    <h2>댓글 수정</h2>
+
+    <form action="/board/<%= result.postID %>/comment/upment/<%= result.id %>?_method=PUT" method="POST" class="create-form">
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" name="description" rows="10" required><%= result.description %></textarea>
+      </div>
+
+      <button type="submit" class="create-button">수정하기</button>
+    </form>
+  </div>
+</main>
+
+<%- include("../../include/footer.ejs") -%>

@@ -1,0 +1,24 @@
+<%- include("../include/header.ejs") -%> 
+
+<!-- Body -->
+<main>
+  <div class="container">
+    <h2>내 게시글 작성</h2>
+    
+    <form action="/myboard" method="POST" class="create-form">
+      <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" name="description" rows="10" required></textarea>
+      </div>
+
+      <button type="submit" class="create-button">작성하기</button>
+    </form>
+  </div>
+</main>
+
+<%- include("../include/footer.ejs") -%>

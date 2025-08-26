@@ -1,0 +1,35 @@
+<%- include("../include/header.ejs") -%> 
+
+  <!-- Body -->
+  <main>
+    <div class="container">
+      <h3>내 게시판리스트</h3>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="/myboard/create" class="btn btn-primary">글 작성</a>
+      </div>
+      
+      <table class="table table-border text-center">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i < results.length; i++) { %>
+              <% var result = results[i]; %>
+                <tr>
+                  <td><%= result.id %></td>
+                  <td><%= result.userID %></td>
+                  <td><a href="/myboard/<%= result.id %>"><%= result.title %></a></td>
+                  <td><%= new Date(new Date(result.created_at).getTime() + 9*60*60*1000).toISOString().slice(0,19).replace('T',' ') %></td>
+                </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+<%- include("../include/footer.ejs") -%>

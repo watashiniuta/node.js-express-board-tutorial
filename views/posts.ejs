@@ -1,0 +1,18 @@
+<h1><%= post.title %></h1>
+<p><%= post.description %></p>
+<hr>
+
+<h2>댓글</h2>
+<form method="POST" action="/posts/<%= post.id %>/comments">
+  <input type="text" name="author" placeholder="작성자" required>
+  <br>
+  <textarea name="content" placeholder="댓글 내용" required></textarea>
+  <br>
+  <button type="submit">댓글 작성</button>
+</form>
+
+<hr>
+
+<div>
+  <%- include("./partials/comment.ejs") -%>
+</div>

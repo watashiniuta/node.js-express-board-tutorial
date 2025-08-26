@@ -1,0 +1,45 @@
+<%- include("../include/header.ejs") -%> 
+
+  <!-- Body -->
+  <main>
+    <div class="container">
+      <form action="/board" method="get" class="search-engine-form">
+        <div>
+          <input type="text" name="search" placeholder="검색어 입력" value="<%= search %>">
+          <button type="submit" class="create-button">검색</button>
+        </div>
+      </form>
+
+      <h3>게시판리스트</h3>
+      <table class="table table-border text-center">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i < results.length; i++) { %>
+              <% var result = results[i]; %>
+                <tr>
+                  <td><%= result.id %></td>
+                  <td><%= result.userID %></td>
+                  <td><a href="/board/<%= result.id %>"><%= result.title %></a></td>
+                  <td><%= new Date(new Date(result.created_at).getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ') %></td>
+                </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <!-- 페이지네이션 -->
+      <div style="margin-top: 14px; border-top-width: 10px; padding-top: 0px;">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <a href="/board?page=<%= i %><% if (search) { %>&search=<%= search %><% } %>"><strong>(<%= i %>)</strong></a>
+        <% } %>
+      </div>
+    </div>
+
+  </main>
+
+<%- include("../include/footer.ejs") -%>

@@ -1,0 +1,36 @@
+<%- include("../include/header.ejs") -%> 
+
+  <script src="/js/auth/register.js"></script>
+
+  <!-- Body -->
+  <main>
+    <div class="container">
+
+      <div class="container">
+        <h3>회원가입</h3>
+        <form action="/login/register" method="POST" class="login-form" id="registerForm">
+          <div>
+            <label for="userID">아이디</label>
+            <input type="text" id="userID" name="userID" placeholder="userID" required /> <button type="button" class="create-button" id="checkDuplicateBtn">중복 확인</button>
+          </div>
+          <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="password" required />
+          </div>
+          <div>
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="example@example.com" required /> <button type="button" class="create-button" id="sendAuthNumBtn">인증코드 발송</button>
+          </div>
+          <div>
+            <input type="text" id="authCode" name="authCode" placeholder="인증번호 입력" required /> <button type="button" class="create-button" id="checkEmailAuthBtn">인증확인</button>
+          </div>
+          <div style="margin-top: 20px;">
+            <button type="submit" class="base">회원가입</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+<%- include("../include/footer.ejs") -%>

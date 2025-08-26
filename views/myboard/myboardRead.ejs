@@ -1,0 +1,49 @@
+<%- include("../include/header.ejs") -%> 
+
+<!-- Body -->
+<main>
+  <div class="container">
+    <h3 class="mb-5">내 게시판글보기</h3>
+
+    <div class="container">
+      <div class="d-flex justify-content-md-between mb-3">
+        <p>작성일 : <%= new Date(new Date(result.created_at).getTime() + 9*60*60*1000).toISOString().slice(0,19).replace('T',' ') %></p>
+        <p>게시글 번호 : <%= result.id %></p>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">글쓴이 : </label>
+        <div class="col-sm-10 pt-2">
+          <p style="margin-top: 9px;"><%= result.userID %></p>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">제목 : </label>
+        <div class="col-sm-10 pt-2">
+          <p style="margin-top: 9px;"><%= result.title %></p>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">내용 : </label>
+        <div class="col-sm-10 pt-2">
+          <pre style="white-space: pre-wrap; font-family: inherit; font-size: 1rem; margin: 0; margin-top: 9px;">
+<%= result.description %>
+          </pre>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="/myboard/<%= result.id %>/update" class="btn btn-primary">수정</a>
+        <form action="/myboard/<%= result.id %>?_method=DELETE" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+          <input type="hidden" name="id" value="<%= result.id %>">
+          <button type="submit" class="create-button">삭제</button>
+        </form>
+        <a href="/myboard" class="btn btn-primary">돌아가기</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include("../include/footer.ejs") -%>

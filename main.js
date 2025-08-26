@@ -1,0 +1,79 @@
+const methodOverride = require("method-override");
+const compression = require("compression");
+const session = require("express-session");
+const express = require("express");
+const helmet = require("helmet");
+const ejs = require("ejs");
+const app = express();
+const port = 3000;
+
+// CSP operations
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://code.jquery.com"],
+      scriptSrcAttr: ["'unsafe-inline'"], // JS event handler accpet
+      styleSrc: ["'self'", "'unsafe-inline'"], // inline CSS handler accpet
+      imgSrc: [
+        "'self'",
+        "data:", // base64 image accept
+        "https://i.imgur.com",
+        "https://your-bucket-name.s3.ap-northeast-2.amazonaws.com", // ✅ adding S3 bucket domain
+      ],
+    },
+  })
+);
+
+app.set("views", __dirname + "/views");
+app.set("view engine", "ejs");
+app.engine("html", ejs.renderFile);
+app.use(express.static("public"));
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+// Method override middleware
+app.use(methodOverride('_method'));
+
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "secret"
+  })
+);
+
+//router of index page
+const indexRouter = require("./routes/index.js");
+//router of board page
+const boardRouter = require("./routes/board.js");
+//router of myboard
+const myboardRouter = require("./routes/myboard2.js");
+//router of login page
+const loginRouter = require("./routes/login.js");
+//router of auth page
+const authRouter = require("./routes/auth.js");
+//router of myprofile page
+const myprofileRouter = require("./routes/myprofile.js");
+
+
+app.use("/", indexRouter);
+app.use("/board", boardRouter);
+app.use("/myboard", myboardRouter);
+app.use("/login", loginRouter);
+app.use("/auth", authRouter);
+app.use("/myprofile", myprofileRouter);
+
+
+app.use(function (req, res) {
+  res.status(404).send("Sorry can't find that!");
+});
+
+app.use(function (error, req, res, next) {
+  console.error(error.stack);
+  res.status(500).send("Something broke!");
+});
+
+app.listen(port, function () {
+  console.log("Example app listening on http://localhost:3000");
+});
