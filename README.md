@@ -1,6 +1,6 @@
 # 📝 node.js-express-board-tutorial
 
-A Node.js Express-based web application for managing posts, comments, and user interactions. This project includes session-based authentication, CRUD operations for posts, hierarchical comments (upments and downments). Users can interact with posts and comments efficiently, with a responsive UI built using EJS and ccxzzjQuery.
+A Node.js Express-based web application for managing posts, comments, and user interactions. This project includes session-based authentication, CRUD operations for posts, hierarchical comments (upments and downments). Users can interact with posts and comments efficiently, with a responsive UI built using EJS and jQuery.
 
 ---
 
