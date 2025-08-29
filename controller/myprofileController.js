@@ -18,13 +18,22 @@ exports.putMyProfileInfo = async (req, res) => {
     const email = req.body.email;
     var imageUrl = null;
 
-    if (req.file) {
-      const fileKey = req.file.key;
-      imageUrl = `${process.env.CLOUDFRONT_URL}/${fileKey}`;
-    }
-
     try {
-        await db.promise().query(`UPDATE users SET email=?, mpimageUrl=? WHERE userID=?`, [email, imageUrl, userID]);
+        if (req.file) {
+            // Create a URL if you have a newly uploaded image
+            const fileKey = req.file.key;
+            imageUrl = `${process.env.CLOUDFRONT_URL}/${fileKey}`;
+        } else {
+            // Keep existing images if you do not upload them
+            const [user] = await db.promise().query(`SELECT mpimageUrl FROM users WHERE userID=?`, [userID]);
+            imageUrl = user[0].mpimageUrl;
+        }
+
+        // DB update
+        await db.promise().query(
+            `UPDATE users SET email=?, mpimageUrl=? WHERE userID=?`,
+            [email, imageUrl, userID]
+        );
 
         res.redirect(`/myprofile`);
     } catch (error) {
