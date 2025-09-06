@@ -12,7 +12,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://code.jquery.com"],
+      scriptSrc: ["'self'", "https://code.jquery.com", "'unsafe-inline'"],
       scriptSrcAttr: ["'unsafe-inline'"], // JS event handler accpet
       styleSrc: ["'self'", "'unsafe-inline'"], // inline CSS handler accpet
       imgSrc: [
@@ -55,7 +55,8 @@ const loginRouter = require("./routes/login.js");
 const authRouter = require("./routes/auth.js");
 //router of myprofile page
 const myprofileRouter = require("./routes/myprofile.js");
-
+//router of like toggle
+const toggleLikeRouter = require("./routes/toggleLike.js");
 
 app.use("/", indexRouter);
 app.use("/board", boardRouter);
@@ -63,7 +64,7 @@ app.use("/myboard", myboardRouter);
 app.use("/login", loginRouter);
 app.use("/auth", authRouter);
 app.use("/myprofile", myprofileRouter);
-
+app.use("/like_toggle", toggleLikeRouter);
 
 app.use(function (req, res) {
   res.status(404).send("Sorry can't find that!");

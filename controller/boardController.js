@@ -45,7 +45,7 @@ exports.getBoard = async (req, res, next) => {
 
     try {
         // certain post
-        const [result] = await db.promise().query(`SELECT posts.id, userID, title, description, created_at FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE posts.id=?`, [id]);
+        const [result] = await db.promise().query(`SELECT posts.id, userID, title, description, created_at, like_count FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE posts.id=?`, [id]);
         
         // all of upment data
         const [results2] = await db.promise().query(`SELECT upment.id, upment.description, upment.created_at, upment.updated_at, upment.downment_count, upment.like_count, upment.postID, users.userID FROM upment LEFT JOIN users ON upment.authorID=users.id WHERE postID=? ORDER BY created_at DESC`, [id]);
@@ -55,6 +55,30 @@ exports.getBoard = async (req, res, next) => {
         // all of downment data
         const [results3] = await db.promise().query(`SELECT downment.id, downment.description, downment.created_at, downment.updated_at, downment.like_count, downment.postID, downment.parentID, users.userID FROM downment LEFT JOIN users ON downment.authorID=users.id WHERE downment.postID=? ORDER BY downment.created_at DESC`,[id]);
 
+        /*
+        // all of like data state - optimized version
+        let postLikeState;
+        let upmentLikeState = {};
+        let downmentLikeState = {};
+        if (userID) {
+            const [likeRows] = await db.promise().query(`SELECT * FROM likes LEFT JOIN users ON likes.user_id=users.id WHERE userID = ? AND ((target_type = "post" AND target_id = ?) OR (target_type = "upment" AND target_id IN (SELECT id FROM upment WHERE postID=?)) OR (target_type = "downment" AND target_id IN (SELECT id FROM downment WHERE postID=?)))`, [userID, id, id, id]);
+
+            likeRows.forEach(like => {
+                if (like.target_type === 'post') {
+                    postLikeState = true;
+                } else if (like.target_type === 'upment') {
+                    upmentLikeState[like.target_id] = true;
+                } else if (like.target_type === 'downment') {
+                    downmentLikeState[like.target_id] = true;
+                }
+            });
+        }  
+        // res.render adding
+        postLikeState: postLikeState,
+        upmentLikeState: upmentLikeState,
+        downmentLikeState: downmentLikeState
+        */ 
+        
         if (result.length === 0) {
             return next();
         } else {
@@ -63,7 +87,7 @@ exports.getBoard = async (req, res, next) => {
                 userID: userID, 
                 results2: results2, 
                 totalUpmentCount: totalUpmentCount,
-                results3: results3 // adding
+                results3: results3
             });
         }
     } catch (error) {

@@ -38,6 +38,11 @@
         </div>
       </div>
 
+      <div class="actions">
+        <button class="like-btn" data-target_type="posts" data-target_id="<%= result.id %>">좋아요</button>
+        <span class="like-count"><%= result.like_count %></span>
+      </div>
+
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a href="/board" class="btn btn-primary">돌아가기</a>
       </div>
@@ -80,7 +85,7 @@
             </div>
             <div class="comment-text"><%= result2.description %></div>
             <div class="actions">
-              <button class="like-btn">좋아요</button>
+              <button class="like-btn" data-target_type="upment" data-target_id="<%= result2.id %>">좋아요</button>
               <span class="like-count"><%= result2.like_count %></span>
               <button class="reply-btn">답글 작성</button>
             </div>
@@ -115,7 +120,7 @@
                           </div>
                           <div class="text"><%= down.description %></div>
                           <div class="actions">
-                            <button class="like-btn">좋아요</button>
+                            <button class="like-btn" data-target_type="downment" data-target_id="<%= down.id %>">좋아요</button>
                             <span class="like-count"><%= down.like_count %></span>
                           </div>
                         </div>

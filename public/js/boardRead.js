@@ -1,6 +1,37 @@
-$(document).on("click", ".reply-btn", function () {
-  const replyInput = $(this).closest(".content").find(".reply-input");
-  replyInput.toggle(); // 숨김/보임 토글
+$(document).ready(function () {
+
+  $(document).on("click", ".reply-btn", function () {
+    const replyInput = $(this).closest(".content").find(".reply-input");
+    replyInput.toggle(); // show/hide toggle
+  });
+
+  $(document).on("click", ".like-btn", function () {
+    const btn = $(this);
+    const countSpan = btn.siblings(".like-count");
+    const target_type = btn.data("target_type");
+    const target_id = btn.data("target_id");
+    let currentCount = parseInt(countSpan.text()) || 0;
+
+    $.ajax({
+      url: `/like_toggle/${target_type}/${target_id}`,
+      method: "POST",
+      dataType: "json",
+    })
+    .done(function (res) {
+      if (res.isLoggin) {
+        if (res.isLiked) {
+          countSpan.text((currentCount + 1).toString());
+        } else {
+          countSpan.text((currentCount - 1).toString());
+        }
+      } else {
+        alert("로그인 후 좋아요를 눌러주세요.");
+      }
+    })
+    .fail(function () {
+      alert("서버 에러: 좋아요 처리 실패");
+    });
+  });
 });
 
 /*
