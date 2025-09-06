@@ -9,7 +9,7 @@ A Node.js Express-based web application for managing posts, comments, likes, and
 - **🔒 User Authentication**: Session-based login and registration with email verification.
 - **📝 Posts Management**: Create, read, update, and delete posts.
 - **💬 Comments & Replies**: Hierarchical comment system. (upments and downments)
-- 👍 Likes System: Like/Dislike functionality for posts, upments, and downments.
+- **👍 Likes System**: Like/Dislike functionality for posts, upments, and downments.
 - **🗄️ Database Integration**: MySQL database stores all application data.
 - **🖥️ Responsive UI**: Frontend rendered using EJS templates with jQuery and AJAX for dynamic interactions.
 
