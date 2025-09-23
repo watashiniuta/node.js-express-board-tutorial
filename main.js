@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const ejs = require("ejs");
 const app = express();
 const port = 3000;
+require('dotenv').config();
 
 // CSP operations
 app.use(
@@ -39,7 +40,7 @@ app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    secret: "secret"
+    secret: process.env.SESSION_SECRET
   })
 );
 

@@ -11,6 +11,8 @@ exports.getAboutPage = (req, res) => {
 };
 
 exports.getLogout = (req, res) => {
+    // expire the broswer of session cookie
+    res.clearCookie('connect.sid');
     req.session.destroy();
     res.redirect("/");
 };
