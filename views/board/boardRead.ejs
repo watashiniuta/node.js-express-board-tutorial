@@ -32,7 +32,7 @@
       <div class="mb-3 row">
         <label class="col-sm-2 col-form-label">내용 : </label>
         <div class="col-sm-10 pt-2">
-          <pre style="white-space: pre-wrap; font-family: inherit; font-size: 1rem; margin: 0; margin-top: 9px;">
+          <pre style="white-space: pre-wrap; font-family: inherit; font-size: 1rem; margin: 0; margin-top: 9px; text-align: left;">
 <%= result.description %>
           </pre>
         </div>
@@ -51,91 +51,7 @@
 
     <br>
     <hr>
-    <h3>댓글 <%= totalUpmentCount %>개</h3>
-    
-    <!-- 댓글 입력 섹션 -->
-    <form action="/board/<%= result.id %>/comment/upment" method="POST" class="comment-form">
-      <div class="comment-input-section">
-        <div class="avatar">나</div>
-        <div class="input-area">
-          <input type="text" name="description" placeholder="댓글을 입력하세요..." required />
-          <button type="submit">작성</button>
-        </div>
-      </div>
-    </form>
-
-    <!-- 댓글 목록 섹션 -->
-    <div class="comment-section">
-      <% for (var i = 0; i < totalUpmentCount; i++) { %>
-        <% result2 = results2[i]; %>
-        <div class="comment">
-          <div class="avatar">:D</div>
-          <div class="content">
-            <div class="author-date">
-              <span class="author"><%= result2.userID %></span>
-              <span class="date"><%= new Date(new Date(result2.created_at).getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ') %></span>
-              
-              <!-- 수정/삭제 버튼 -->
-              <span class="comment-actions">
-                <a href="/board/<%= result2.postID %>/comment/upment/<%= result2.id %>/update" class="upment-update">수정</a>
-                <form action="/board/<%= result2.postID %>/comment/upment/<%= result2.id %>?_method=DELETE" method="POST" onsubmit="return confirm(`정말 삭제하시겠습니까?`);">
-                  <button type="submit">삭제</button>
-                </form>
-              </span>
-            </div>
-            <div class="comment-text"><%= result2.description %></div>
-            <div class="actions">
-              <button class="like-btn" data-target_type="upment" data-target_id="<%= result2.id %>">좋아요</button>
-              <span class="like-count"><%= result2.like_count %></span>
-              <button class="reply-btn">답글 작성</button>
-            </div>
-            <div class="replies">
-
-              <!-- 대댓글이 들어가는 공간 -->
-              <div class="reply-input" style="display: none;">
-                <form action="/board/<%= result2.postID %>/comment/upment/<%= result2.id %>/downment" method="POST" class="downment-form">
-                  <input type="text" name="description" placeholder="답글을 입력하세요..." />
-                  <button class="submit-reply">작성</button>
-                </form>
-                <!-- 대댓글 목록 -->
-                <div class="reply-section">
-                  
-                  <% results3.forEach(function(down) { %>
-                    <% if (down.parentID === result2.id) { %>
-                      <div class="comment reply">
-                        <div class="avatar">😃</div>
-                        <div class="content">
-                          <div class="author-date">
-                            <span class="author"><%= down.userID %></span>
-                            <span class="date">
-                              <%= new Date(new Date(down.created_at).getTime() + 9 * 60 * 60 * 1000)
-                                    .toISOString().slice(0, 19).replace('T', ' ') %>
-                            </span>
-                            <span class="comment-actions">
-                              <a href="/board/<%= down.postID %>/comment/upment/<%= down.parentID %>/downment/<%= down.id %>/update" class="downment-update">수정</a>
-                              <form action="/board/<%= down.postID %>/comment/upment/<%= down.parentID %>/downment/<%= down.id %>?_method=DELETE" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                                <button type="submit">삭제</button>
-                              </form>
-                            </span>
-                          </div>
-                          <div class="text"><%= down.description %></div>
-                          <div class="actions">
-                            <button class="like-btn" data-target_type="downment" data-target_id="<%= down.id %>">좋아요</button>
-                            <span class="like-count"><%= down.like_count %></span>
-                          </div>
-                        </div>
-                      </div>
-                    <% } %>
-                  <% }); %>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <% } %>
-    </div>
+    <%- include("../comment/commentSection.ejs") -%>
 
   </div>
 </main>
