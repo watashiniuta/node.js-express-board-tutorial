@@ -14,6 +14,7 @@
             <th scope="col">번호</th>
             <th scope="col">글쓴이</th>
             <th scope="col">제목</th>
+            <th scope="col">조회수</th>
             <th scope="col">작성일</th>
           </tr>
         </thead>
@@ -24,6 +25,7 @@
                   <td><%= result.id %></td>
                   <td><%= result.userID %></td>
                   <td><a href="/myboard/<%= result.id %>"><%= result.title %></a></td>
+                  <td><%= result.views %></td>
                   <td><%= new Date(new Date(result.created_at).getTime() + 9*60*60*1000).toISOString().slice(0,19).replace('T',' ') %></td>
                 </tr>
           <% } %>

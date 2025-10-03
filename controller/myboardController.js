@@ -84,7 +84,7 @@ exports.getBoardListPage = async (req, res) => {
     const userID = req.session.userID;
 
     try {
-        const [results] = await db.promise().query(`SELECT posts.id, userID, title, created_at FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE userID=? ORDER BY created_at DESC`, [userID]);
+        const [results] = await db.promise().query(`SELECT posts.id, userID, title, created_at, views FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE userID=? ORDER BY created_at DESC`, [userID]);
 
         res.render("./myboard/myboardList.ejs", { results: results, userID: userID });
     } catch (error) {
