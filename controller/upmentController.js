@@ -1,4 +1,5 @@
 const db = require("../model/dbConnector.js");
+const sanitizeHtml = require("sanitize-html");
 
 exports.getUpmentUpdatePage = async (req, res, next) => {
     // 1.Check if you're logged in (401 return)
@@ -25,7 +26,7 @@ exports.getUpmentUpdatePage = async (req, res, next) => {
 };
 
 exports.createUpment = async (req, res) => {
-        const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
     const postID = req.params.postID;
     const userID = req.session.userID;
 
@@ -43,7 +44,7 @@ exports.createUpment = async (req, res) => {
 };
 
 exports.updateUpment = async (req, res) => {
-    const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
     const { postID, upmentID } = req.params;
 
     try {

@@ -1,4 +1,5 @@
 const db = require("../model/dbConnector.js");
+const sanitizeHtml = require("sanitize-html");
 
 
 exports.getDownmentUpdatePage = async (req, res, next) => {
@@ -27,7 +28,7 @@ exports.getDownmentUpdatePage = async (req, res, next) => {
 
 exports.createDownment = async (req, res) => {
     const { postID, upmentID } = req.params;
-    const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
     const userID = req.session.userID;
     
     // save data on downmentDB
@@ -45,7 +46,7 @@ exports.createDownment = async (req, res) => {
 
 exports.updateDownment = async (req, res) => {
     const { postID, upmentID, downmentID } = req.params;
-    const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
 
     try {
         await db.promise().query(`UPDATE downment SET description=?, updated_at=NOW() WHERE id=? AND parentID=?`, [description, downmentID, upmentID]);
