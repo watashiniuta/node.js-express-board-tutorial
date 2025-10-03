@@ -1,6 +1,6 @@
 # 📝 node.js-express-board-tutorial
 
-A Node.js Express-based web application for managing posts, comments, likes, and user interactions. This project includes session-based authentication, CRUD operations for posts, hierarchical comments (upments and downments), and a like system for posts and comments. Users can interact with content efficiently, with a responsive UI built using EJS and jQuery.
+A Node.js Express-based web application for managing posts, comments, likes, and user interactions. This project includes session-based authentication, CRUD operations for posts, hierarchical comments (upments and downments), a like system for posts and comments, and a view counter to track post popularity. Users can interact with content efficiently, with a responsive UI built using EJS and jQuery.
 
 ---
 
@@ -12,6 +12,7 @@ A Node.js Express-based web application for managing posts, comments, likes, and
 - **👍 Likes System**: Like/Dislike functionality for posts, upments, and downments.
 - **🗄️ Database Integration**: MySQL database stores all application data.
 - **🖥️ Responsive UI**: Frontend rendered using EJS templates with jQuery and AJAX for dynamic interactions.
+- **👁️ Views**: Track and display the number of times a post is viewed.
 
 ---
 
@@ -33,6 +34,8 @@ A Node.js Express-based web application for managing posts, comments, likes, and
 - **path** – Utility for working with file and directory paths
 - **method-override** – Allows HTTP verbs such as PUT or DELETE in places where the client doesn’t support it
 - **sanitize-html** – Cleans user-submitted HTML to prevent XSS
+- **express-mysql-session** – MySQL session store for Express.
+- **cookie-parser** – Middleware to parse cookies in requests.
 
 ---
 
@@ -90,6 +93,7 @@ CREATE TABLE downment (
   authorID INT NOT NULL
 );
 ```
+
 ### **likes table**
 ```sql
 CREATE TABLE likes (
