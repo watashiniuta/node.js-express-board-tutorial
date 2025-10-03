@@ -1,3 +1,4 @@
+const saveSessionAndRespond = require("../utils/sessionSaveHelper.js");
 const db = require("../model/dbConnector.js");
 
 
@@ -12,12 +13,12 @@ exports.getBoardList = async (req, res) => {
         let query, params, countQuery, countParams;
 
         if (search) {
-            query = `SELECT posts.id, title, description, created_at, userID FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE title LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+            query = `SELECT posts.id, title, description, created_at, userID, views FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE title LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?`;
             params = [`%${search}%`, limit, offset];
             countQuery = `SELECT COUNT(*) AS total FROM posts WHERE title LIKE ?`;
             countParams = [`%${search}%`];
         } else {
-            query = `SELECT posts.id, title, description, created_at, userID FROM posts LEFT JOIN users ON posts.authorID=users.id ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+            query = `SELECT posts.id, title, description, created_at, userID, views FROM posts LEFT JOIN users ON posts.authorID=users.id ORDER BY created_at DESC LIMIT ? OFFSET ?`;
             params = [limit, offset];
             countQuery = `SELECT COUNT(*) AS total FROM posts`;
             countParams = [];
@@ -45,8 +46,20 @@ exports.getBoard = async (req, res, next) => {
 
     try {
         // certain post
-        const [result] = await db.promise().query(`SELECT posts.id, userID, title, description, created_at, like_count FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE posts.id=?`, [id]);
+        const [result] = await db.promise().query(`SELECT posts.id, userID, title, description, created_at, like_count, views FROM posts LEFT JOIN users ON posts.authorID=users.id WHERE posts.id=?`, [id]);
+        if (result.length === 0) return next(); // This condition result.length==0 is modified so that it is directly below the query statement.
+
+        // Initialize if the session does not have viewedPosts
+        if (!req.session.viewedPosts) req.session.viewedPosts = {};
+        const now = Date.now();
+        const VIEW_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7days in milliseconds
         
+        // Increase views if the session does not have that post or has expired
+        if (!req.session.viewedPosts[id] || (now - req.session.viewedPosts[id]) > VIEW_EXPIRATION) {
+            await db.promise().query(`UPDATE posts SET views = views + 1 WHERE id = ?`, [id]);
+            req.session.viewedPosts[id] = now; // Update to current time
+        }
+
         // all of upment data
         const [results2] = await db.promise().query(`SELECT upment.id, upment.description, upment.created_at, upment.updated_at, upment.downment_count, upment.like_count, upment.postID, users.userID FROM upment LEFT JOIN users ON upment.authorID=users.id WHERE postID=? ORDER BY created_at DESC`, [id]);
         const [rows] = await db.promise().query(`SELECT COUNT(*) AS totalUpmentCount FROM upment WHERE postID=?`,[id]);
@@ -79,9 +92,7 @@ exports.getBoard = async (req, res, next) => {
         downmentLikeState: downmentLikeState
         */ 
         
-        if (result.length === 0) {
-            return next();
-        } else {
+        saveSessionAndRespond(req, res, () => {
             res.render("./board/boardRead.ejs", { 
                 result: result[0], 
                 userID: userID, 
@@ -89,7 +100,7 @@ exports.getBoard = async (req, res, next) => {
                 totalUpmentCount: totalUpmentCount,
                 results3: results3
             });
-        }
+        });
     } catch (error) {
         console.error("보드 게시글 조회 오류: ", error);
     }

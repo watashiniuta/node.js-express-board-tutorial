@@ -1,3 +1,5 @@
+const regenerateSession = require("../utils/regenerateSessionHelper.js");
+const saveSessionAndRespond = require("../utils/sessionSaveHelper.js");
 const db = require("../model/dbConnector.js");
 const bcrypt = require("bcrypt");
 require('dotenv').config();
@@ -18,20 +20,24 @@ exports.postLoginInfo = async (req, res) => {
         if (results.length) {
             const match = await bcrypt.compare(password, results[0].password);
             if (userID === results[0].userID && match) {
-                //adding userID data on session
+                const oldData = {
+                    viewedPosts: req.session.viewedPosts || {}
+                };
+
+                await regenerateSession(req); // Issue a new session ID
+                if (isKeepLogin) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7; // Extension of session cookie duration when checking login maintenance (e.g. 7 days)
+
                 req.session.userID = userID;
                 req.session.loginFailed = false;
-                if (isKeepLogin) {
-                    // Extension of session cookie duration when checking login maintenance (e.g. 7 days)
-                    req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
-                }
 
-                return res.redirect(`/`);
+                 // Reinsert backup data into a new session
+                req.session.viewedPosts = oldData.viewedPosts;
+                return saveSessionAndRespond(req, res, () => { res.redirect(`/`); });
             } 
         }
 
         req.session.loginFailed = true;
-        res.redirect(`/login`);
+        return saveSessionAndRespond(req, res, () => { res.redirect(`/login`); });
     } catch (error) {
         console.error("로그인 오류: ", error);
     }
