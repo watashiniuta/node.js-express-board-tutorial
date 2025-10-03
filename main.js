@@ -1,6 +1,7 @@
 const methodOverride = require("method-override");
 const compression = require("compression");
 const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 const express = require("express");
 const helmet = require("helmet");
 const ejs = require("ejs");
@@ -29,18 +30,35 @@ app.use(
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.engine("html", ejs.renderFile);
-app.use(express.static("public"));
 app.use(compression());
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// Method override middleware
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
+
+const sessionStore = new MySQLStore({
+  host: process.env.host,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database,
+  expiration: 1000 * 60 * 60 * 24,        // Server session data expires after 24 hours
+  checkExpirationInterval: 1000 * 60 * 60, // Clear expired sessions every hour
+  createDatabaseTable: true
+});
 
 app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    secret: process.env.SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
+    store: sessionStore,
+    rolling: true,   // Initialize cookie expiration time whenever a request is received
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 // Cookies are valid for 24 hours
+    }
   })
 );
 
