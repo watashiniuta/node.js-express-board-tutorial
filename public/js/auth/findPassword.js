@@ -1,5 +1,22 @@
 let codeSendedEmail = "";
 
+function validateInput () {
+        const password = $("#password").val();
+
+        if (password.length < 1 || password.length > 15 || /\s/.test(password)) {
+                alert("비밀번호는 1~15자이며 공백이 없어야 합니다.");
+                return false;
+        }
+
+        // 영문 검사
+        if (!/^(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/.test(password)) {
+                alert("비밀번는 반드시 영문자를 포함하고, 숫자 및 특수문자는 선택 사항입니다.");
+                return false;
+        }
+
+        return true;
+}
+
 function sendAuthNum () {
         const email = $("#email").val();
 
@@ -46,7 +63,7 @@ function checkEmailAuth () {
                 if (data.success) {
                         alert("인증에 성공했습니다.");
                         let insert_html = `
-                            <form action="/login/findPassword?_method=PUT" method="POST" onsubmit="validateInput()">
+                            <form action="/login/findPassword?_method=PUT" method="POST" onsubmit="return validateInput()">
                                 <label for="password">새 비밀번호</label>
                                 <input type="hidden" id="email" name="email" value="${email}">
                                 <input type="password" id="password" name="password" placeholder="password" required>
