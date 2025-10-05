@@ -22,7 +22,6 @@ exports.sendVerificationCode = async (req, res) => {
             } else {
                 await sendAuthCode(req, email, "기존 아이디 발급 절차를 위한 인증코드입니다.", purpose);
                 saveSessionAndRespond(req, res, () => { res.json({ success: true, isEmailExists: true }); });
-                
             }
         } else if (purpose === "findPassword") {
             if (results.length === 0) {
@@ -33,6 +32,7 @@ exports.sendVerificationCode = async (req, res) => {
             }
         }
     } catch (error) {
+        console.error("인증코드 전송 오류: ", error);
         res.json({ success: false });
     }
 };
@@ -42,21 +42,25 @@ exports.VerificationCode = async (req, res) => {
     const isMatch = verifyAuthCode(req, authCode, purpose);
     let userID = "해당 데이터가 없습니다.";
 
+    try {
+        if (purpose === "findID") {
+            const [results] = await db.promise().query(`SELECT * FROM users WHERE email=?`, [email]);
+            userID = results[0].userID;
 
-    if (purpose === "findID") {
-        const [results] = await db.promise().query(`SELECT * FROM users WHERE email=?`, [email]);
-        userID = results[0].userID;
-
-        if (isMatch) {
-            saveSessionAndRespond(req, res, () => { res.json({ success: true, userID: userID }); });
+            if (isMatch) {
+                saveSessionAndRespond(req, res, () => { res.json({ success: true, userID: userID }); });
+            } else {
+                res.json({ success: false, userID: userID });
+            }
         } else {
-            res.json({ success: false, userID: userID });
+            if (isMatch) {
+                saveSessionAndRespond(req, res, () => { res.json({ success: true }); });
+            } else {
+                res.json({ success: false });
+            }
         }
-    } else {
-        if (isMatch) {
-            saveSessionAndRespond(req, res, () => { res.json({ success: true }); });
-        } else {
-            res.json({ success: false });
-        }
+    } catch (error) {
+        console.error("인증코드 오류: ", error);
+        res.json({ success: false });
     }
 };
