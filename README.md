@@ -2,6 +2,10 @@
 
 A Node.js Express-based web application for managing posts, comments, likes, and user interactions. This project includes session-based authentication, CRUD operations for posts, hierarchical comments (upments and downments), a like system for posts and comments, and a view counter to track post popularity. Users can interact with content efficiently, with a responsive UI built using EJS and jQuery.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6c321cf9-84a5-40d7-96a4-cfefc2202a2d">
+</p>
+
 ---
 
 ## 🚀 Features
